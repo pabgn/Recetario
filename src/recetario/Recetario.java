@@ -1,38 +1,59 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package recetario;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import recetario.controller.Controlador;
+import recetario.model.Category;
+import recetario.model.Receta;
 
-/**
- *
- * @author toespar
- */
 public class Recetario extends Application {
+    private final static String DATABASE_NAME = "jdbc:h2:file:./data/recetario";
+    public Dao<Category, Integer> categoryDao;
+    public Dao<Receta, Integer> recetaDao;
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("recetario.view/Inicio.fxml"));
-        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/recetario/view/Inicio.fxml"));
+        Parent root = (Parent) loader.load();
+        Controlador controller = loader.getController();
+        controller.app=this;
         Scene scene = new Scene(root);
-        
         stage.setScene(scene);
         stage.show();
+        ConnectionSource connectionSource = null;
+        try {
+            connectionSource = new JdbcConnectionSource(DATABASE_NAME);
+          
+        } finally {
+		if (connectionSource != null) {
+		connectionSource.close();
+		}
+	}
+        setupDatabase(connectionSource);
+        controller.ready();
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws Exception {
+	
         launch(args);
+    }
+    public void setupDatabase(ConnectionSource connectionSource) throws Exception {
+	categoryDao = DaoManager.createDao(connectionSource, Category.class);
+	recetaDao = DaoManager.createDao(connectionSource, Receta.class);
+	
+        TableUtils.createTableIfNotExists(connectionSource, Receta.class);
+        TableUtils.createTableIfNotExists(connectionSource, Category.class);
+        
     }
     
 }
