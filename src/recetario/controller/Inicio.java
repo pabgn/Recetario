@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Callback;
@@ -57,9 +58,9 @@ public class Inicio extends Controlador {
             }
             ObservableList<Receta> data1 = FXCollections.observableArrayList(recetas1);
             ObservableList<Receta> data2 = FXCollections.observableArrayList(recetas2);
-            
             listView1.setItems(data1);
             listView2.setItems(data2);
+
     }
     public void ready(){
         try {
@@ -151,8 +152,12 @@ static class CeldaReceta extends ListCell<Receta> {
                 System.out.println("Error abriendo celda");
             }
 
-            }
-        }
+            }else{
+                VBox v = new VBox();
+                setGraphic(v);
+            }   
+        
+}
     }
         
 

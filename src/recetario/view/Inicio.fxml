@@ -101,8 +101,8 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <ListView fx:id="listView1" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" />
-                              <ListView fx:id="listView2" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                              <ListView fx:id="listView1" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white;" />
+                              <ListView fx:id="listView2" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white;" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                      </content>
