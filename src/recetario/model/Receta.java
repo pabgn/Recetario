@@ -55,7 +55,7 @@ public class Receta {
         try{
             img = new Image("resources/"+this.imagen);
         }catch(Exception e){
-            img = new Image("resources/paella.jpg");            
+            img = new Image("resources/chef.jpg");            
         }
         return img;
     }

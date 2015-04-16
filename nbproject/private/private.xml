@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/pablo/Recetario/src/recetario/model/Receta.java</file>
-            <file>file:/Users/pablo/Recetario/src/recetario/controller/Controlador.java</file>
-            <file>file:/Users/pablo/Recetario/src/recetario/Recetario.java</file>
-            <file>file:/Users/pablo/Recetario/src/recetario/view/Celda.fxml</file>
-            <file>file:/Users/pablo/Recetario/src/recetario/model/Category.java</file>
-            <file>file:/Users/pablo/Recetario/src/recetario/controller/Inicio.java</file>
+            <file>file:/Users/toespar/Documents/Recetario/src/recetario/model/Category.java</file>
+            <file>file:/Users/toespar/Documents/Recetario/src/recetario/model/Ingrediente.java</file>
+            <file>file:/Users/toespar/Documents/Recetario/src/recetario/Recetario.java</file>
+            <file>file:/Users/toespar/Documents/Recetario/src/recetario/model/Receta.java</file>
         </group>
     </open-files>
 </project-private>
