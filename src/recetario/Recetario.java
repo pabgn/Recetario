@@ -5,6 +5,9 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,16 +26,11 @@ public class Recetario extends Application {
     public Dao<Receta, Integer> recetaDao;
     public Dao<Ingrediente, Integer> ingredienteDao;
     public Dao<Paso, Integer> pasoDao;
-    
+    public Stage stage;
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/recetario/view/Inicio.fxml"));
-        Parent root = (Parent) loader.load();
-        Controlador controller = loader.getController();
-        controller.app=this;
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        this.stage = stage;
+        Controlador c = abrirVentana("Inicio", "Recetario");
         ConnectionSource connectionSource = null;
         try {
             connectionSource = new JdbcConnectionSource(DATABASE_NAME);
@@ -43,10 +41,24 @@ public class Recetario extends Application {
 		}
 	}
         setupDatabase(connectionSource);
-        controller.ready();
+        c.ready();
     }
 
-
+    public Controlador abrirVentana(String viewName, String title){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/recetario/view/"+viewName+".fxml"));
+        Parent root = null;
+        Stage stage = new Stage();
+        try {
+            root = (Parent) loader.load();
+        } catch (IOException ex) {}
+        Controlador controller = loader.getController();
+        controller.app=this;
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.show();
+        return controller;
+    }
     public static void main(String[] args) throws Exception {
 	
         launch(args);

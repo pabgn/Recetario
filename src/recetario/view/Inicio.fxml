@@ -15,6 +15,16 @@
          <children>
             <AnchorPane prefHeight="25.0" prefWidth="200.0">
                <children>
+                  <HBox AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <children>
+                        <Button mnemonicParsing="false" text="Nueva receta" />
+                        <Button mnemonicParsing="false" onAction="#doImport" text="Importar receta">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                   <TextField fx:id="search" alignment="TOP_RIGHT" maxWidth="150.0" minWidth="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0" />
                </children>
             </AnchorPane>
