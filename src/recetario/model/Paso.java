@@ -2,6 +2,9 @@ package recetario.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javafx.scene.image.Image;
 
 @DatabaseTable(tableName="pasos") 
 public class Paso {
@@ -27,6 +30,40 @@ public class Paso {
     
     public Paso(){
         
+    }
+    public int getOrder(){
+        return this.order;
+    }
+    public String getDescription(){
+        return this.description;
+    }
+    public String getMedia(){
+        return this.media;
+    }
+    public Image loadMediaImage(){
+        Image img;
+        try{
+            img = new Image("/resources/"+this.media);
+        } catch(Exception e){
+            img = new Image("/resources/comida.jpg");
+        } 
+        return img;      
+    }
+    public Image loadYoutubeImage(){
+        Image img;
+        String pattern = "(?<=watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
+        Pattern compiledPattern = Pattern.compile(pattern);
+        Matcher matcher = compiledPattern.matcher(this.getMedia());
+        String id=null;
+        if(matcher.find()){
+            id= matcher.group();
+        }
+        try{
+            img = new Image("http://img.youtube.com/vi/"+id+"/0.jpg");
+        } catch(Exception e){
+            img = new Image("/resources/comida.jpg");
+        } 
+        return img;   
     }
     
 }

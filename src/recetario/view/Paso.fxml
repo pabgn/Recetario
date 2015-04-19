@@ -9,8 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane id="AnchorPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <GridPane prefHeight="80.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -22,7 +21,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="1.">
+            <Label fx:id="number" text="1.">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
@@ -30,12 +29,26 @@
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <Label text="La información de carácter personal recabada en este formulario será incorporada a un fichero titularidad de FERROCARRILS DE LA GENERALITAT VALENCIANA imprescindible para la gestión de las sugerencias que haga para la mejora de nuestro servicio de Metrovalencia.De acuerdo con lo dispuesto en la Ley Orgánica 15/1999, de Protección de Datos de Carácter Personal, usted tiene derecho a ejercitar los derechos de acceso, rectificación, cancelación, y en su caso, oposición, enviando una solicitud por escrito, acompañada de una fotocopia de su DNI dirigida a:" wrapText="true" GridPane.columnIndex="1">
+            <Label fx:id="description" wrapText="true" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+            <ImageView fx:id="media" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+               <image>
+                  <Image url="@../../resources/paso1.jpg" />
+               </image></ImageView>
+            <ImageView fx:id="play" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+               <image>
+                  <Image url="@../../resources/play.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <GridPane.margin>
+                  <Insets left="15.0" />
+               </GridPane.margin>
+            </ImageView>
          </children>
       </GridPane>
    </children>

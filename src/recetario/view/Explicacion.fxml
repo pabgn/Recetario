@@ -130,7 +130,7 @@
                            </font>
                         </Label>
                         <ListView prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-                        <ListView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ListView fx:id="pasosList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Forma de preparación" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                            <font>
                               <Font size="24.0" />

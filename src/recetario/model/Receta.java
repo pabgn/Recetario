@@ -71,5 +71,9 @@ public class Receta {
         if(this.level==2){ return "yellow"; }
         return "red";
     }
+
+    public int getId() {
+        return this.id;
+    }
    
 }
