@@ -134,5 +134,34 @@ public class Explicacion extends Controlador{
                 }
             };
         });
+        
+        
+        ingredientesList.setCellFactory((list) -> {
+            return new ListCell<Ingrediente>() {
+                @Override
+                protected void updateItem(Ingrediente item, boolean empty) {
+                    if(!empty){
+                        try {
+                            super.updateItem(item, empty);
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/recetario/view/Ingrediente.fxml"));
+                            Parent root = (Parent) loader.load();
+                            Label weight = (Label)root.lookup("#weight");
+                            weight.setText(item.getCantidad());
+                            Label description = (Label)root.lookup("#description");
+                            description.setText(item.getName());
+                            ImageView media = (ImageView)root.lookup("#media");
+                            media.setImage(item.loadImage());                            
+                            setGraphic(root);           
+                        } catch (IOException ex) {
+                            System.out.println("Error abriendo celda");
+                        }
+
+                    }else{
+                        VBox v = new VBox();
+                        setGraphic(v);
+                    }
+                }
+            };
+        });
     }
 }

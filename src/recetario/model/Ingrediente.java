@@ -22,9 +22,9 @@ public class Ingrediente {
     @DatabaseField(columnName= NAME_FIELD_CANTIDAD, canBeNull = true)
     private String cantidad;
     
-    public static final String NAME_FIELD_IMAGEN = "imagen";
+    public static final String NAME_FIELD_IMAGEN = "image";
     @DatabaseField(columnName = NAME_FIELD_IMAGEN, canBeNull = true)
-    private String imagen;
+    private String image;
     
     public String getName(){
         return this.name;
@@ -34,10 +34,13 @@ public class Ingrediente {
         return this.cantidad;
     }
     
-    public Image getImagen(){
+    public String getImage(){
+        return this.image;
+    }
+    public Image loadImage(){
         Image img;
         try{
-            img = new Image("/resources/"+this.imagen);
+            img = new Image("/resources/"+this.image);
         } catch(Exception e){
             img = new Image("/resources/comida.jpg");
         } 
@@ -57,7 +60,7 @@ public class Ingrediente {
     }
     
     public void setImage(String img){
-        this.imagen = img;
+        this.image = img;
     }
     
 
