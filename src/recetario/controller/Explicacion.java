@@ -15,32 +15,55 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import recetario.model.Ingrediente;
 import recetario.model.Paso;
 import recetario.model.Receta;
 
 public class Explicacion extends Controlador{
     public Receta r;
-    public List<Paso> pasos;    
+    public List<Paso> pasos;
+    public List<Ingrediente> ingredientes;
     @FXML
     private ListView pasosList;
+    @FXML 
+    private ListView ingredientesList;
+    @FXML
+    private Button editarButton;
+    @FXML
+    private Button addIngrediente;
+    @FXML
+    private Button removeIngrediente;
+    @FXML
+    private Button addPaso;
+    @FXML
+    private Button removePaso;
+    @FXML
+    private Image image;
     public void ready(){
         try {
             pasos = this.app.pasoDao.queryBuilder().where().eq(Paso.NAME_FIELD_RECETA, r.getId()).query();
+            ingredientes = this.app.ingredienteDao.queryBuilder().where().eq(Ingrediente.NAME_FIELD_ID_RECETA, r.getId()).query();
         } catch (SQLException ex) {
-            System.out.println("Error en la búsqueda de pasos");
+            System.out.println("Error en la búsqueda de la receta");
         }
         showPasos();
+        showIngredientes();
     }
     public void showPasos(){
          ObservableList<Paso> data = FXCollections.observableArrayList(pasos);
          pasosList.setItems(null);
-         pasosList.setItems(data);
+         pasosList.setItems(data);       
+    }
          
-            
+    public void showIngredientes(){
+        ObservableList<Ingrediente> ingr = FXCollections.observableArrayList(ingredientes);
+        ingredientesList.setItems(null);
+        ingredientesList.setItems(ingr);
     }
     public void abrirVisor(Paso p){
         System.out.println("Hello");
