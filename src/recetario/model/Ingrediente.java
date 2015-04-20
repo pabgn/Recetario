@@ -14,9 +14,9 @@ public class Ingrediente {
     @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false)
     private String name;
     
-    public static final String NAME_FIELD_ID_RECETA = "id_receta";
+    public static final String NAME_FIELD_RECETA = "receta_id";
     @DatabaseField(canBeNull = true, foreign = true)
-    private Receta id_receta;
+    private Receta receta;
     
     public static final String NAME_FIELD_CANTIDAD = "cantidad";
     @DatabaseField(columnName= NAME_FIELD_CANTIDAD, canBeNull = true)
@@ -45,7 +45,7 @@ public class Ingrediente {
     }
     
     public Receta getReceta(){
-        return this.id_receta;
+        return this.receta;
     }
     
     public void setName(String name){
@@ -60,7 +60,5 @@ public class Ingrediente {
         this.imagen = img;
     }
     
-    public void setIdReceta(Receta receta){
-        this.id_receta = receta;
-    }
+
 }

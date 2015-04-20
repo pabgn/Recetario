@@ -59,6 +59,9 @@ public class Receta {
         }
         return img;
     }
+    public Category getCategory(){
+        return this.category;
+    }
     public String getTime(){
         return this.time+" minutos";
         

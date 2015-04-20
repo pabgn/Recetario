@@ -43,16 +43,36 @@ public class Explicacion extends Controlador{
     @FXML
     private Button removePaso;
     @FXML
-    private Image image;
+    private ImageView image;
+    @FXML
+    private Label name;  
+    @FXML
+    private Label time;  
+    @FXML
+    private Label people;
+    @FXML
+    private Label category;
+    @FXML
+    private Circle level;
+    
     public void ready(){
         try {
             pasos = this.app.pasoDao.queryBuilder().where().eq(Paso.NAME_FIELD_RECETA, r.getId()).query();
-            ingredientes = this.app.ingredienteDao.queryBuilder().where().eq(Ingrediente.NAME_FIELD_ID_RECETA, r.getId()).query();
+            ingredientes = this.app.ingredienteDao.queryBuilder().where().eq(Ingrediente.NAME_FIELD_RECETA, r.getId()).query();
         } catch (SQLException ex) {
             System.out.println("Error en la búsqueda de la receta");
         }
+        showInformation();
         showPasos();
         showIngredientes();
+    }
+    public void showInformation(){
+        name.setText(r.getName());
+        people.setText(r.getPeople()+" comensales");
+        category.setText(r.getCategory().getName());
+        time.setText(r.getTime());
+        level.setFill(Color.web(r.getLevel()));
+        image.setImage(r.getImage());
     }
     public void showPasos(){
          ObservableList<Paso> data = FXCollections.observableArrayList(pasos);

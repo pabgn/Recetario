@@ -82,7 +82,7 @@
                                                 <Image url="@../../resources/categoria.png" />
                                              </image>
                                           </ImageView>
-                                          <Label fx:id="tipoPlato" text="Primer plato">
+                                          <Label fx:id="category" text="Primer plato">
                                              <padding>
                                                 <Insets left="5.0" top="2.0" />
                                              </padding>
