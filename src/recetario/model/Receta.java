@@ -53,7 +53,7 @@ public class Receta {
      public Image getImage(){
         Image img;
         try{
-            img = new Image("resources/"+this.imagen);
+            img = new Image("file:./data/images/"+this.imagen);
         }catch(Exception e){
             img = new Image("resources/chef.jpg");            
         }

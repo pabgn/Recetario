@@ -42,7 +42,7 @@ public class Ingrediente {
     public Image loadImage(){
         Image img;
         try{
-            img = new Image("/resources/"+this.image);
+            img = new Image("file:./data/images/"+this.image);
         } catch(Exception e){
             img = new Image("/resources/comida.jpg");
         } 

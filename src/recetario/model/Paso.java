@@ -52,7 +52,7 @@ public class Paso {
     public Image loadMediaImage(){
         Image img;
         try{
-            img = new Image("/resources/"+this.media);
+            img = new Image("file:./data/images/"+this.media);
         } catch(Exception e){
             img = new Image("/resources/comida.jpg");
         } 
@@ -80,6 +80,9 @@ public class Paso {
     }
     public void setDescription(String d){
         this.description=d;
+    }
+    public void setMedia(String m){
+        this.media=m;
     }
     
 }

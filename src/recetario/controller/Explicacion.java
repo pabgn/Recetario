@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -118,9 +119,9 @@ public class Explicacion extends Controlador{
 	}
 
 }
-    public void mediaDialog(){
+    public void mediaDialog(Paso p, ImageView preview){
         Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Recurso para pasos");
+        alert.setTitle("Elegir recurso");
         alert.setHeaderText("Elige un tipo de multimedia para continuar");
         alert.setContentText("");
 
@@ -132,15 +133,29 @@ public class Explicacion extends Controlador{
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == youtube){
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Dirección YouTube");
+            dialog.setHeaderText("Dirección YouTube");
+            dialog.setContentText("Introduce la dirección del vídeo en YouTube:");
+
+            Optional<String> resultYouTube = dialog.showAndWait();
+            if (resultYouTube.isPresent()){
+                p.setMedia(resultYouTube.get());
+                preview.setImage(p.loadYoutubeImage());
+            }
+
+
         } else if (result.get() == image) {
               final FileChooser fileChooser = new FileChooser();
               File file = fileChooser.showOpenDialog(stage);
                if (file != null) {
-                   File dest = new File("./resources/file.jpg");
+                   File dest = new File("./data/images/"+file.getName());
                   try {
                       copyFile(file, dest);
+                      p.setMedia(file.getName());
+                      preview.setImage(p.loadMediaImage());
                   } catch (IOException ex) {
-                      System.out.println("Error al copiar archivo");
+                      System.out.println(ex.getMessage());
                   }
                    
                }
@@ -227,7 +242,7 @@ public class Explicacion extends Controlador{
                                   descriptionEdit.setVisible(true);
                                   descriptionEdit.setId("description"+item.getId());
                                   choose.setVisible(true);
-                                  choose.setOnMouseClicked((event) -> { mediaDialog();  });
+                                  choose.setOnMouseClicked((event) -> { mediaDialog(item, media);  });
                             }
                             
                             setGraphic(root);           
