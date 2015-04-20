@@ -57,6 +57,7 @@ public class Recetario extends Application {
         stage.setScene(scene);
         stage.setTitle(title);
         stage.show();
+        controller.stage=stage;
         return controller;
     }
     public static void main(String[] args) throws Exception {

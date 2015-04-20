@@ -68,7 +68,7 @@ public class Explicacion extends Controlador{
     }
     public void showInformation(){
         name.setText(r.getName());
-        people.setText(r.getPeople()+" comensales");
+        people.setText(r.getPeople());
         category.setText(r.getCategory().getName());
         time.setText(r.getTime());
         level.setFill(Color.web(r.getLevel()));
@@ -86,8 +86,12 @@ public class Explicacion extends Controlador{
         ingredientesList.setItems(ingr);
     }
     public void abrirVisor(Paso p){
-        System.out.println("Hello");
-        Controlador v = this.app.abrirVentana("Visor", "Visor");
+        Visor v = (Visor)this.app.abrirVentana("Visor", "Visor");
+        if(p.getMedia().contains("youtube")){
+            v.id=p.getYoutubeId(p.getMedia());
+        }else{
+            v.image=p.loadMediaImage();
+        }
         v.ready();
     }
     @FXML
@@ -115,6 +119,7 @@ public class Explicacion extends Controlador{
                                 play.setOnMouseClicked((event) -> { abrirVisor(item);  });
                             }else{
                                 media.setImage(item.loadMediaImage());
+                                media.setOnMouseClicked((event) -> { abrirVisor(item);  });
                             }
                             
                             setGraphic(root);           

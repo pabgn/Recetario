@@ -49,15 +49,19 @@ public class Paso {
         } 
         return img;      
     }
-    public Image loadYoutubeImage(){
-        Image img;
+    public String getYoutubeId(String url){
         String pattern = "(?<=watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
         Pattern compiledPattern = Pattern.compile(pattern);
-        Matcher matcher = compiledPattern.matcher(this.getMedia());
+        Matcher matcher = compiledPattern.matcher(url);
         String id=null;
         if(matcher.find()){
             id= matcher.group();
         }
+        return id;
+    }
+    public Image loadYoutubeImage(){
+        Image img;
+        String id = this.getYoutubeId(this.getMedia());
         try{
             img = new Image("http://img.youtube.com/vi/"+id+"/0.jpg");
         } catch(Exception e){

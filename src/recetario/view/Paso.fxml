@@ -37,7 +37,10 @@
             <ImageView fx:id="media" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                <image>
                   <Image url="@../../resources/paso1.jpg" />
-               </image></ImageView>
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></ImageView>
             <ImageView fx:id="play" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
                <image>
                   <Image url="@../../resources/play.png" />
