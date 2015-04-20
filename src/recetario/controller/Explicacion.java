@@ -1,9 +1,15 @@
 package recetario.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -11,15 +17,22 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
+import org.h2.store.fs.FileUtils;
 import recetario.model.Ingrediente;
 import recetario.model.Paso;
 import recetario.model.Receta;
@@ -39,6 +52,8 @@ public class Explicacion extends Controlador{
     @FXML
     private Button removeIngrediente;
     @FXML
+    private Button saveButton;
+    @FXML
     private Button addPaso;
     @FXML
     private Button removePaso;
@@ -55,16 +70,15 @@ public class Explicacion extends Controlador{
     @FXML
     private Circle level;
     
+    private boolean isEditing = false;
     public void ready(){
         try {
-            pasos = this.app.pasoDao.queryBuilder().where().eq(Paso.NAME_FIELD_RECETA, r.getId()).query();
-            ingredientes = this.app.ingredienteDao.queryBuilder().where().eq(Ingrediente.NAME_FIELD_RECETA, r.getId()).query();
+            showPasos();
+            showIngredientes();
         } catch (SQLException ex) {
             System.out.println("Error en la búsqueda de la receta");
         }
         showInformation();
-        showPasos();
-        showIngredientes();
     }
     public void showInformation(){
         name.setText(r.getName());
@@ -74,13 +88,68 @@ public class Explicacion extends Controlador{
         level.setFill(Color.web(r.getLevel()));
         image.setImage(r.getImage());
     }
-    public void showPasos(){
+    public void showPasos() throws SQLException{
+         pasos = this.app.pasoDao.queryBuilder().where().eq(Paso.NAME_FIELD_RECETA, r.getId()).query();
          ObservableList<Paso> data = FXCollections.observableArrayList(pasos);
          pasosList.setItems(null);
          pasosList.setItems(data);       
     }
-         
-    public void showIngredientes(){
+      
+    private static void copyFile(File sourceFile, File destFile)
+		throws IOException {
+	if (!sourceFile.exists()) {
+		return;
+	}
+	if (!destFile.exists()) {
+		destFile.createNewFile();
+	}
+	FileChannel source = null;
+	FileChannel destination = null;
+	source = new FileInputStream(sourceFile).getChannel();
+	destination = new FileOutputStream(destFile).getChannel();
+	if (destination != null && source != null) {
+		destination.transferFrom(source, 0, source.size());
+	}
+	if (source != null) {
+		source.close();
+	}
+	if (destination != null) {
+		destination.close();
+	}
+
+}
+    public void mediaDialog(){
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Recurso para pasos");
+        alert.setHeaderText("Elige un tipo de multimedia para continuar");
+        alert.setContentText("");
+
+        ButtonType youtube = new ButtonType("YouTube");
+        ButtonType image = new ButtonType("Imagen local");
+        ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(youtube, image, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == youtube){
+        } else if (result.get() == image) {
+              final FileChooser fileChooser = new FileChooser();
+              File file = fileChooser.showOpenDialog(stage);
+               if (file != null) {
+                   File dest = new File("./resources/file.jpg");
+                  try {
+                      copyFile(file, dest);
+                  } catch (IOException ex) {
+                      System.out.println("Error al copiar archivo");
+                  }
+                   
+               }
+        } else {
+            // ... user chose CANCEL or closed the dialog
+        }
+    }
+    public void showIngredientes() throws SQLException{
+        ingredientes = this.app.ingredienteDao.queryBuilder().where().eq(Ingrediente.NAME_FIELD_RECETA, r.getId()).query();
         ObservableList<Ingrediente> ingr = FXCollections.observableArrayList(ingredientes);
         ingredientesList.setItems(null);
         ingredientesList.setItems(ingr);
@@ -94,8 +163,37 @@ public class Explicacion extends Controlador{
         }
         v.ready();
     }
+    public void addPaso(){
+        Paso p = new Paso("", pasos.size()+1, r);
+        try {
+            this.app.pasoDao.create(p);
+        } catch (SQLException ex) {
+            System.out.println("Error creado nuevo paso");
+        }
+        this.ready();
+    }
+    public void save() throws SQLException{
+        for (Object a : pasosList.getItems()) {
+            Paso p = (Paso)a;
+            TextArea description = (TextArea)pasosList.lookup("#description"+p.getId());
+            p.setDescription(description.getText());
+            this.app.pasoDao.update(p);
+        }
+
+    }
+    public void modoEditar(boolean t){
+        isEditing=t;
+        editarButton.setVisible(!t);
+        saveButton.setVisible(t);
+        this.ready();
+    }
     @FXML
     private void initialize() {
+        //Botones
+        addPaso.setOnMouseClicked((event) -> { addPaso();  });
+        editarButton.setOnMouseClicked((event) -> { modoEditar(true);  });
+        saveButton.setOnMouseClicked((event) -> { try { save(); modoEditar(false);  } catch (SQLException ex) { System.out.println("Error al guardar información");} });
+
         //Estilo de la lista de pasos
         pasosList.setCellFactory((list) -> {
             return new ListCell<Paso>() {
@@ -109,8 +207,11 @@ public class Explicacion extends Controlador{
                             Label number = (Label)root.lookup("#number");
                             number.setText(item.getOrder()+".");
                             Label description = (Label)root.lookup("#description");
+                            TextArea descriptionEdit = (TextArea)root.lookup("#descriptionEdit");
                             description.setText(item.getDescription());
                             ImageView media = (ImageView)root.lookup("#media");
+                            Button choose = (Button)root.lookup("#choose");
+
                             String med = item.getMedia();
                             if (med.contains("youtube")){
                                 ImageView play = (ImageView)root.lookup("#play");
@@ -120,6 +221,13 @@ public class Explicacion extends Controlador{
                             }else{
                                 media.setImage(item.loadMediaImage());
                                 media.setOnMouseClicked((event) -> { abrirVisor(item);  });
+                            }
+                            if(isEditing){
+                                  descriptionEdit.setText(item.getDescription());
+                                  descriptionEdit.setVisible(true);
+                                  descriptionEdit.setId("description"+item.getId());
+                                  choose.setVisible(true);
+                                  choose.setOnMouseClicked((event) -> { mediaDialog();  });
                             }
                             
                             setGraphic(root);           

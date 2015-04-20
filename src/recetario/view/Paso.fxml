@@ -29,11 +29,15 @@
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="description" wrapText="true" GridPane.columnIndex="1">
+            <Label fx:id="description" text="Prueba" wrapText="true" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
+            <TextArea fx:id="descriptionEdit" minHeight="-Infinity" prefHeight="10.0" prefWidth="200.0" visible="false" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+               <GridPane.margin>
+                  <Insets bottom="10.0" right="10.0" top="10.0" />
+               </GridPane.margin></TextArea>
             <ImageView fx:id="media" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                <image>
                   <Image url="@../../resources/paso1.jpg" />
@@ -52,6 +56,11 @@
                   <Insets left="15.0" />
                </GridPane.margin>
             </ImageView>
+            <Button fx:id="choose" mnemonicParsing="false" text="Elegir..." visible="false" GridPane.columnIndex="2">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Button>
          </children>
       </GridPane>
    </children>

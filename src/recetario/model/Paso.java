@@ -28,8 +28,17 @@ public class Paso {
     @DatabaseField(canBeNull = true, foreign = true)
     private Receta receta;
     
-    public Paso(){
+    public Paso(String description, int order, Receta r){
+        this.description=description;
+        this.order=order;
+        this.receta=r;
+        this.media="";
+    }
+    Paso(){
         
+    }
+    public int getId(){
+        return this.id;
     }
     public int getOrder(){
         return this.order;
@@ -68,6 +77,9 @@ public class Paso {
             img = new Image("/resources/comida.jpg");
         } 
         return img;   
+    }
+    public void setDescription(String d){
+        this.description=d;
     }
     
 }
