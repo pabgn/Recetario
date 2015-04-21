@@ -185,7 +185,7 @@ public class Explicacion extends Controlador{
         } catch (SQLException ex) {
             System.out.println("Error creado nuevo paso");
         }
-        this.ready();
+        modoEditar(true);
     }
     public void save() throws SQLException{
         for (Object a : pasosList.getItems()) {
