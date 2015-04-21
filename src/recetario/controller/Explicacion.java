@@ -230,7 +230,15 @@ public class Explicacion extends Controlador{
             p.setDescription(description.getText());     
             this.app.pasoDao.update(p);
         }
-
+        
+        for (Object b : ingredientesList.getItems()) {
+            Ingrediente i = (Ingrediente) b;
+            TextField description = (TextField) ingredientesList.lookup("#description"+i.getId());
+            i.setName(description.getText());  
+            TextField weight = (TextField) ingredientesList.lookup("#weight"+i.getId());
+            i.setCantidad(weight.getText());
+            this.app.ingredienteDao.update(i);
+        }
     }
     public void modoEditar(boolean t){
         isEditing=t;
@@ -261,18 +269,27 @@ public class Explicacion extends Controlador{
         //Botones
         addPaso.setDisable(true);
         removePaso.setDisable(true);
+        addIngrediente.setDisable(true);
+        removeIngrediente.setDisable(true);
+        
         addPaso.setOnMouseClicked((event) -> { addPaso();  });
         addIngrediente.setOnMouseClicked((event) -> { addIngrediente();  });
         editarButton.setOnMouseClicked((event) -> { 
             modoEditar(true); 
             removePaso.setDisable(false);
-            addPaso.setDisable(false); });
+            addPaso.setDisable(false); 
+            addIngrediente.setDisable(false);
+            removeIngrediente.setDisable(false);});
         saveButton.setOnMouseClicked((event) -> { 
           try{ 
             save(); 
             modoEditar(false);
             addPaso.setDisable(true);
+            addIngrediente.setDisable(true);
+            removeIngrediente.setDisable(true);
           } catch (SQLException ex) { System.out.println("Error al guardar información");} });
+        
+        
         //Estilo de la lista de pasos
         pasosList.setCellFactory((list) -> {
             return new ListCell<Paso>() {
@@ -341,25 +358,23 @@ public class Explicacion extends Controlador{
                             ImageView media = (ImageView)root.lookup("#media");
                             media.setImage(i.loadImage());
                             media.setOnMouseClicked((event) -> { abrirImagen(i);  });
-                            TextField weightEdit = (TextField)root.lookup("#weigthEdit");
+                            TextField weightEdit = (TextField)root.lookup("#weightEdit");
                             TextField descriptionEdit = (TextField)root.lookup("#descriptionEdit");
                             Button choose = (Button)root.lookup("#choose");
                             removeIngrediente.setOnMouseClicked((event) -> {eliminarIngrediente(i);});
-                            setGraphic(root);  
-                            /**
+                            
                             if(isEditing){
-                                descriptionEdit.setText(i.getName());
-                                descriptionEdit.setVisible(true);
-                                descriptionEdit.setId("description");
-                                weightEdit.setText(i.getCantidad());
                                 weightEdit.setVisible(true);
-                                weightEdit.setEditable(true);
-                                weightEdit.setId("weight");
-                                choose.setVisible(true);
+                                weightEdit.setText(weight.getText());
+                                weightEdit.setId("weight"+i.getId());
+                                descriptionEdit.setVisible(true);
+                                descriptionEdit.setText(description.getText());
+                                descriptionEdit.setId("description"+i.getId());
                                 media.setVisible(false);
+                                choose.setVisible(true);
                                 choose.setOnMouseClicked((event) -> { mediaIngrediente(i, media);  });
                             }
-                            */
+                            setGraphic(root); 
                         } catch (IOException ex) {
                             System.out.println("Error abriendo celda");
                         }

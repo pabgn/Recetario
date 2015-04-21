@@ -18,7 +18,7 @@
                   <HBox AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button mnemonicParsing="false" text="Nueva receta" />
-                        <Button mnemonicParsing="false" onAction="#doImport" text="Importar receta">
+                        <Button mnemonicParsing="false" onAction="#doImport" text="Exportar receta">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>

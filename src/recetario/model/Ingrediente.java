@@ -38,7 +38,9 @@ public class Ingrediente {
     public String getName(){
         return this.name;
     }
-    
+    public int getId(){
+        return this.id;
+    }
     public String getCantidad(){
         return this.cantidad;
     }
