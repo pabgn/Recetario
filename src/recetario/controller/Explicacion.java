@@ -220,7 +220,7 @@ public class Explicacion extends Controlador{
         } catch (SQLException ex){
             System.out.println("Error creando nuevo ingrediente");
         }
-        this.ready();
+        modoEditar(true);
     }
     
     public void save() throws SQLException{
