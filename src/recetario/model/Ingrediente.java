@@ -25,8 +25,12 @@ public class Ingrediente {
     public static final String NAME_FIELD_IMAGEN = "image";
     @DatabaseField(columnName = NAME_FIELD_IMAGEN, canBeNull = true)
     private String image;
-    public Ingrediente(){
-        
+    
+    public Ingrediente(String cantidad, String name, Receta r){
+        this.name = name;
+        this.cantidad = cantidad;
+        this.receta = r;
+        this.image = "";
     }
     public String getName(){
         return this.name;
