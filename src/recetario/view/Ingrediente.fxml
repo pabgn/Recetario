@@ -30,18 +30,13 @@
                <image>
                   <Image url="@../../resources/ingrediente1.jpg" />
                </image>
-            </ImageView>
-            <ImageView fx:id="play" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
-               <image>
-                  <Image url="@../../resources/play.png" />
-               </image>
-               <GridPane.margin>
-                  <Insets left="15.0" />
-               </GridPane.margin>
             </ImageView>
+            <TextField fx:id="descriptionEdit" visible="false" GridPane.columnIndex="1" />
+            <TextField fx:id="weightEdit" visible="false" />
+            <Button fx:id="choose" mnemonicParsing="false" text="Elegir..." visible="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
          </children>
          <columnConstraints>
             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" prefWidth="78.0" />

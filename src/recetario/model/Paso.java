@@ -49,6 +49,11 @@ public class Paso {
     public String getMedia(){
         return this.media;
     }
+    
+    public void setOrder(int order){
+        this.order = order;
+    }
+    
     public Image loadMediaImage(){
         Image img;
         try{
