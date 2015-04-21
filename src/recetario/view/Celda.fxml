@@ -86,7 +86,7 @@
                           </rowConstraints>
                            <children>
                               <Button fx:id="open" alignment="CENTER" mnemonicParsing="false" text="Abrir" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                              <Button fx:id="share" mnemonicParsing="false" text="Compartir" GridPane.halignment="CENTER" />
+                              <Button fx:id="delete" mnemonicParsing="false" text="Eliminar" GridPane.halignment="CENTER" />
                            </children>
                            <GridPane.margin>
                               <Insets top="10.0" />

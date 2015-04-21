@@ -43,9 +43,16 @@ public class Receta {
     public static final String NAME_FIELD_RATING = "rating";
     @DatabaseField(columnName = NAME_FIELD_RATING, canBeNull = true)
     private int rating;
-    
+   
+    public boolean nueva;
     Receta(){
        
+    }
+    public Receta(boolean n){
+        if(n){
+            this.name="";
+            this.nueva=true;
+        }
     }
     public String getName() {
         return this.name;
