@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -168,6 +169,23 @@ public class Explicacion extends Controlador{
             // ... user chose CANCEL or closed the dialog
         }
     }
+    
+    public void mediaIngrediente(Ingrediente i, ImageView preview){
+        final FileChooser fileChooser = new FileChooser();
+              File file = fileChooser.showOpenDialog(stage);
+               if (file != null) {
+                   File dest = new File("./data/images/"+file.getName());
+                  try {
+                      copyFile(file, dest);
+                      i.setImage(file.getName());
+                      preview.setImage(i.loadImage());
+                  } catch (IOException ex) {
+                      System.out.println(ex.getMessage());
+                  }
+                   
+               }
+    }
+    
     public void showIngredientes() throws SQLException{
         ingredientes = this.app.ingredienteDao.queryBuilder().where().eq(Ingrediente.NAME_FIELD_RECETA, r.getId()).query();
         ObservableList<Ingrediente> ingr = FXCollections.observableArrayList(ingredientes);
@@ -183,20 +201,38 @@ public class Explicacion extends Controlador{
         }
         v.ready();
     }
+    
+    public void abrirImagen(Ingrediente i){
+        Visor v = (Visor) this.app.abrirVentana("Visor", "Visor");
+        v.image = i.loadImage();
+        v.ready();
+    }
+    
     public void addPaso(){
         Paso p = new Paso("", pasos.size()+1, r);
         try {
             this.app.pasoDao.create(p);
         } catch (SQLException ex) {
-            System.out.println("Error creado nuevo paso");
+            System.out.println("Error creando nuevo paso");
+        }
+        this.ready();
+    }
+    
+    public void addIngrediente(){
+        Ingrediente i = new Ingrediente("", "", r);
+        try{
+            this.app.ingredienteDao.create(i);
+        } catch (SQLException ex){
+            System.out.println("Error creando nuevo ingrediente");
         }
         modoEditar(true);
     }
+    
     public void save() throws SQLException{
         for (Object a : pasosList.getItems()) {
             Paso p = (Paso)a;
             TextArea description = (TextArea)pasosList.lookup("#description"+p.getId());
-            p.setDescription(description.getText());
+            p.setDescription(description.getText());     
             this.app.pasoDao.update(p);
         }
 
@@ -207,13 +243,43 @@ public class Explicacion extends Controlador{
         saveButton.setVisible(t);
         this.ready();
     }
+    
+    public void eliminarIngrediente(Ingrediente i){
+        try{
+            this.app.ingredienteDao.delete(i);
+        }catch(SQLException ex){
+            System.out.println("Error al borrar ingrediente");
+        }
+        this.ready();
+    }
+    
+    public void eliminarPaso(Paso p){
+        try{
+            if(p.getOrder() == 1){
+                this.app.pasoDao.delete(p);
+                for (Object a : pasosList.getItems()){
+                    Paso pa = (Paso) a;
+                    pa.setOrder(pa.getOrder()-1);
+                }   
+            } else {
+                int o = p.getOrder();
+                this.app.pasoDao.delete(p);
+                for (Object a : pasosList.getItems()){
+                    Paso pa = (Paso) a;
+                    if(pa.getOrder()>o) pa.setOrder(pa.getOrder()-1);
+                }
+            }
+        }catch(SQLException ex){
+            System.out.println("Error al eliminar paso");
+        }
+        this.ready();
+    }
     @FXML
     private void initialize() {
         //Botones
-        addPaso.setOnMouseClicked((event) -> { addPaso();  });
+        addIngrediente.setOnMouseClicked((event) -> { addIngrediente();  });
         editarButton.setOnMouseClicked((event) -> { modoEditar(true);  });
         saveButton.setOnMouseClicked((event) -> { try { save(); modoEditar(false);  } catch (SQLException ex) { System.out.println("Error al guardar información");} });
-
         //Estilo de la lista de pasos
         pasosList.setCellFactory((list) -> {
             return new ListCell<Paso>() {
@@ -231,7 +297,10 @@ public class Explicacion extends Controlador{
                             description.setText(item.getDescription());
                             ImageView media = (ImageView)root.lookup("#media");
                             Button choose = (Button)root.lookup("#choose");
-
+                            removePaso.setDisable(true);
+                            removePaso.setOnMouseClicked((event) -> {eliminarPaso(item);});
+                            addPaso.setOnMouseClicked((event) -> { addPaso();  });
+                            addPaso.setDisable(true);
                             String med = item.getMedia();
                             if (med.contains("youtube")){
                                 ImageView play = (ImageView)root.lookup("#play");
@@ -243,6 +312,8 @@ public class Explicacion extends Controlador{
                                 media.setOnMouseClicked((event) -> { abrirVisor(item);  });
                             }
                             if(isEditing){
+                                  removePaso.setDisable(false);
+                                  addPaso.setDisable(false);
                                   descriptionEdit.setText(item.getDescription());
                                   descriptionEdit.setVisible(true);
                                   descriptionEdit.setId("description"+item.getId());
@@ -267,23 +338,41 @@ public class Explicacion extends Controlador{
         ingredientesList.setCellFactory((list) -> {
             return new ListCell<Ingrediente>() {
                 @Override
-                protected void updateItem(Ingrediente item, boolean empty) {
+                protected void updateItem(Ingrediente i, boolean empty) {
                     if(!empty){
                         try {
-                            super.updateItem(item, empty);
+                            super.updateItem(i, empty);
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/recetario/view/Ingrediente.fxml"));
                             Parent root = (Parent) loader.load();
                             Label weight = (Label)root.lookup("#weight");
-                            weight.setText(item.getCantidad());
+                            weight.setText(i.getCantidad());
                             Label description = (Label)root.lookup("#description");
-                            description.setText(item.getName());
+                            description.setText(i.getName());
                             ImageView media = (ImageView)root.lookup("#media");
-                            media.setImage(item.loadImage());                            
-                            setGraphic(root);           
+                            media.setImage(i.loadImage());
+                            media.setOnMouseClicked((event) -> { abrirImagen(i);  });
+                            TextField weightEdit = (TextField)root.lookup("#weigthEdit");
+                            TextField descriptionEdit = (TextField)root.lookup("#descriptionEdit");
+                            Button choose = (Button)root.lookup("#choose");
+                            removeIngrediente.setOnMouseClicked((event) -> {eliminarIngrediente(i);});
+                            setGraphic(root);  
+                            /**
+                            if(isEditing){
+                                descriptionEdit.setText(i.getName());
+                                descriptionEdit.setVisible(true);
+                                descriptionEdit.setId("description");
+                                weightEdit.setText(i.getCantidad());
+                                weightEdit.setVisible(true);
+                                weightEdit.setEditable(true);
+                                weightEdit.setId("weight");
+                                choose.setVisible(true);
+                                media.setVisible(false);
+                                choose.setOnMouseClicked((event) -> { mediaIngrediente(i, media);  });
+                            }
+                            */
                         } catch (IOException ex) {
                             System.out.println("Error abriendo celda");
                         }
-
                     }else{
                         VBox v = new VBox();
                         setGraphic(v);
