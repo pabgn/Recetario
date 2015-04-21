@@ -32,6 +32,9 @@ public class Ingrediente {
         this.receta = r;
         this.image = "";
     }
+    Ingrediente(){
+        
+    }
     public String getName(){
         return this.name;
     }
