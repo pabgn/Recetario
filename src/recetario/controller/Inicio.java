@@ -1,5 +1,8 @@
 package recetario.controller;
 
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,12 +24,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -43,6 +53,16 @@ public class Inicio extends Controlador {
     private ListView listView2; 
     @FXML
     private ComboBox categoryFilter;
+    @FXML
+    private ComboBox levelFilter;
+    @FXML
+    private TextField search;
+    @FXML
+    private Button newReceta;
+    
+    public int category=0;
+    public int level=0;
+    public int rating=0;
     
     public Inicio(){
         super();
@@ -52,13 +72,60 @@ public class Inicio extends Controlador {
         c.r=r;
         c.ready();
     }
-    public void mostrarRecetas(int category) throws SQLException{
+    public void eliminarReceta(Receta r){
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Eliminar receta");
+        alert.setHeaderText("Eliminar receta");
+        alert.setContentText("¿Estás seguro que deseas eliminar esta receta y todo su contenido?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            try {
+                this.app.recetaDao.delete(r);
+                mostrarRecetas();
+            } catch (SQLException ex) {
+                System.out.println("Error borrando receta");
+                
+            }
+        } else {
+            
+        }
+    }
+    public void newReceta(){
+        Receta r = new Receta(true);
+        abrirReceta(r);
+    }
+    public void mostrarRecetas() throws SQLException{
         List<Receta> recetas1;
-        if(category==0){
-            //No se ha especificado categoría para filtrar
-            recetas1 = this.app.recetaDao.queryForAll();
+        
+        QueryBuilder<Receta, Integer> qb = this.app.recetaDao.queryBuilder();        
+        Where where = qb.where();
+        boolean and=false;
+        if(category!=0){
+             where.eq(Receta.NAME_FIELD_CATEGORY, category);
+             and=true;
+        }
+        if(level!=0){
+            if(and){ where.and(); }
+             where.eq(Receta.NAME_FIELD_LEVEL, level);
+             and=true;
+        }
+        if(rating!=0){
+            if(and){ where.and(); }
+             where.eq(Receta.NAME_FIELD_RATING, rating);
+             and=true;
+        }
+        if(search.getText().length()!=0){
+            if(and){ where.and(); }
+            where.like(Receta.NAME_FIELD_NAME, "%"+search.getText()+"%");
+            and=true;
+        }
+        
+        if(and){
+            PreparedQuery<Receta> p = qb.prepare();
+            recetas1 = this.app.recetaDao.query(p);
         }else{
-            recetas1 = this.app.recetaDao.queryBuilder().where().eq(Receta.NAME_FIELD_CATEGORY, category).query();
+            recetas1= this.app.recetaDao.queryForAll();
         }
         List<Receta> recetas2 = new ArrayList<Receta>();
             //Separamos en dos columnas por posiciones pares e impares
@@ -86,6 +153,10 @@ public class Inicio extends Controlador {
             ObservableList<Category> categories_l = FXCollections.observableArrayList(categories);
             categoryFilter.setItems(categories_l);
             categoryFilter.getSelectionModel().selectFirst();
+            List<String> levels = Arrays.asList("Todos", "Fácil", "Medio", "Difícil");
+            ObservableList<String> levels_l = FXCollections.observableArrayList(levels);
+            levelFilter.setItems(levels_l);
+            levelFilter.getSelectionModel().selectFirst();
             
             //Cargamos las recetas de la DB:
         } catch (SQLException ex) {
@@ -112,12 +183,15 @@ public class Inicio extends Controlador {
                                 Circle level = (Circle)root.lookup("#level");  
                                 Label people = (Label)root.lookup("#people");
                                 Button open = (Button)root.lookup("#open");                
+                                Button delete = (Button)root.lookup("#delete");                
                                 name.setText(item.getName());
                                 image.setImage(item.getImage());
                                 time.setText(item.getTime());
                                 people.setText(item.getPeople());
                                 level.setFill(Color.web(item.getLevel()));
                                 open.setOnAction((event) -> { abrirReceta(item);  });
+                                delete.setOnAction((event) -> { eliminarReceta(item);  });
+
                                 setGraphic(root);
                 
                             } catch (IOException ex) {
@@ -166,12 +240,34 @@ public class Inicio extends Controlador {
         categoryFilter.setOnAction((event) -> {
             try {
                 Category category = (Category) categoryFilter.getSelectionModel().getSelectedItem();
-                mostrarRecetas(category.getId());
+                this.category = category.getId();
+                mostrarRecetas();
             } catch (SQLException ex) {
                 System.out.println("Error en búsqueda por categoría");
             }
             
         });
+        
+        levelFilter.setOnAction((event) -> {
+            try {
+                int level = levelFilter.getSelectionModel().selectedIndexProperty().intValue();
+                this.level = level;
+                mostrarRecetas();
+            } catch (SQLException ex) {
+                System.out.println("Error en búsqueda por nivel");
+            }
+            
+        });
+        search.setOnKeyPressed((event)->{ 
+            if(event.getCode()==KeyCode.ENTER){
+                try {
+                   mostrarRecetas();
+               } catch (SQLException ex) {
+                   System.out.println("Error en búsqueda por valor");
+               }
+            }});
+        
+        newReceta.setOnAction((event)->{ newReceta(); });
     }
 
     @FXML

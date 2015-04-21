@@ -73,13 +73,18 @@ public class Explicacion extends Controlador{
     
     private boolean isEditing = false;
     public void ready(){
-        try {
-            showPasos();
-            showIngredientes();
-        } catch (SQLException ex) {
-            System.out.println("Error en la búsqueda de la receta");
+        if(this.r.nueva){
+            modoEditar(true);
+            this.r.nueva=false;
+        }else{
+            try {
+                showPasos();
+                showIngredientes();
+            } catch (SQLException ex) {
+                System.out.println("Error en la búsqueda de la receta");
+            }
+            showInformation();
         }
-        showInformation();
     }
     public void showInformation(){
         name.setText(r.getName());
