@@ -250,20 +250,7 @@ public class Explicacion extends Controlador{
     
     public void eliminarPaso(Paso p){
         try{
-            if(p.getOrder() == 1){
-                this.app.pasoDao.delete(p);
-                for (Object a : pasosList.getItems()){
-                    Paso pa = (Paso) a;
-                    pa.setOrder(pa.getOrder()-1);
-                }   
-            } else {
-                int o = p.getOrder();
-                this.app.pasoDao.delete(p);
-                for (Object a : pasosList.getItems()){
-                    Paso pa = (Paso) a;
-                    if(pa.getOrder()>o) pa.setOrder(pa.getOrder()-1);
-                }
-            }
+            this.app.pasoDao.delete(p);         
         }catch(SQLException ex){
             System.out.println("Error al eliminar paso");
         }
@@ -272,9 +259,20 @@ public class Explicacion extends Controlador{
     @FXML
     private void initialize() {
         //Botones
+        addPaso.setDisable(true);
+        removePaso.setDisable(true);
+        addPaso.setOnMouseClicked((event) -> { addPaso();  });
         addIngrediente.setOnMouseClicked((event) -> { addIngrediente();  });
-        editarButton.setOnMouseClicked((event) -> { modoEditar(true);  });
-        saveButton.setOnMouseClicked((event) -> { try { save(); modoEditar(false);  } catch (SQLException ex) { System.out.println("Error al guardar información");} });
+        editarButton.setOnMouseClicked((event) -> { 
+            modoEditar(true); 
+            removePaso.setDisable(false);
+            addPaso.setDisable(false); });
+        saveButton.setOnMouseClicked((event) -> { 
+          try{ 
+            save(); 
+            modoEditar(false);
+            addPaso.setDisable(true);
+          } catch (SQLException ex) { System.out.println("Error al guardar información");} });
         //Estilo de la lista de pasos
         pasosList.setCellFactory((list) -> {
             return new ListCell<Paso>() {
@@ -294,8 +292,6 @@ public class Explicacion extends Controlador{
                             Button choose = (Button)root.lookup("#choose");
                             removePaso.setDisable(true);
                             removePaso.setOnMouseClicked((event) -> {eliminarPaso(item);});
-                            addPaso.setOnMouseClicked((event) -> { addPaso();  });
-                            addPaso.setDisable(true);
                             String med = item.getMedia();
                             if (med.contains("youtube")){
                                 ImageView play = (ImageView)root.lookup("#play");
@@ -308,7 +304,6 @@ public class Explicacion extends Controlador{
                             }
                             if(isEditing){
                                   removePaso.setDisable(false);
-                                  addPaso.setDisable(false);
                                   descriptionEdit.setText(item.getDescription());
                                   descriptionEdit.setVisible(true);
                                   descriptionEdit.setId("description"+item.getId());
