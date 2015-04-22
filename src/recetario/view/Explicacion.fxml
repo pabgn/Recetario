@@ -39,6 +39,7 @@
                            <children>
                               <GridPane maxWidth="1.7976931348623157E308" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                  <children>
+                                    <TextField fx:id="nameEdit" visible="false" />
                                     <Label fx:id="name" text="Título de la receta">
                                        <font>
                                           <Font name="System Bold" size="31.0" />
@@ -54,9 +55,15 @@
                                                 <Insets top="1.0" />
                                              </HBox.margin>
                                           </ImageView>
-                                          <Label fx:id="time" text="5 minutos">
+                                          <Label fx:id="time" text="5">
                                              <HBox.margin>
                                                 <Insets left="5.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <TextField fx:id="timeEdit" maxWidth="0.0" visible="false" />
+                                          <Label text="minutos">
+                                             <HBox.margin>
+                                                <Insets />
                                              </HBox.margin>
                                           </Label>
                                        </children>
@@ -68,11 +75,13 @@
                                                 <Image url="@../../resources/fork.png" />
                                              </image>
                                           </ImageView>
-                                          <Label fx:id="people" text="1 comensal">
+                                          <Label fx:id="people" text="1">
                                              <HBox.margin>
                                                 <Insets left="5.0" />
                                              </HBox.margin>
                                           </Label>
+                                          <TextField fx:id="peopleEdit" maxWidth="0.0" visible="false" />
+                                          <Label text="comensal" />
                                        </children>
                                     </HBox>
                                     <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
@@ -99,6 +108,11 @@
                                           <Insets right="20.0" />
                                        </GridPane.margin>
                                     </Button>
+                                    <ComboBox fx:id="categoriaEdit" prefWidth="150.0" visible="false" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets left="25.0" />
+                                       </GridPane.margin>
+                                    </ComboBox>
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
