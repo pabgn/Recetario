@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import recetario.controller.Controlador;
+import recetario.controller.Inicio;
 import recetario.model.Category;
 import recetario.model.Ingrediente;
 import recetario.model.Paso;
@@ -27,10 +28,12 @@ public class Recetario extends Application {
     public Dao<Ingrediente, Integer> ingredienteDao;
     public Dao<Paso, Integer> pasoDao;
     public Stage stage;
+    public Inicio inicio;
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
         Controlador c = abrirVentana("Inicio", "Recetario");
+        this.inicio=(Inicio)c;
         ConnectionSource connectionSource = null;
         try {
             connectionSource = new JdbcConnectionSource(DATABASE_NAME);

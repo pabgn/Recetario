@@ -76,6 +76,10 @@ public class Receta {
     public int getPeople(){
         return this.people;
     }
+    public int getPlainLevel(){
+        return this.level;
+    }
+    
     public String getLevel(){
         if(this.level==1){ return "green"; }
         if(this.level==2){ return "yellow"; }
@@ -100,6 +104,12 @@ public class Receta {
     
     public void setImage(String i){
         this.imagen = i;
+    }
+    public void setCategory(Category c){
+        this.category=c;
+    }
+    public void setLevel(int l){
+        this.level=l;
     }
     
     public Image loadImage(){

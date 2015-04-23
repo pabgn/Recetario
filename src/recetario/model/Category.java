@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "categories")
 public class Category {
 @DatabaseField(generatedId = true)
-    private int id;
+private int id;
     
     public static final String NAME_FIELD_NAME = "name";
     @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false)

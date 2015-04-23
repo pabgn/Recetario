@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -51,17 +52,17 @@ public class Explicacion extends Controlador{
     @FXML 
     private ListView ingredientesList;
     @FXML
-    private Button editarButton;
+    private ImageView editarButton;
     @FXML
-    private Button addIngrediente;
+    private ImageView addIngrediente;
     @FXML
-    private Button removeIngrediente;
+    private ImageView removeIngrediente;
     @FXML
-    private Button saveButton;
+    private ImageView saveButton;
     @FXML
-    private Button addPaso;
+    private ImageView addPaso;
     @FXML
-    private Button removePaso;
+    private ImageView removePaso;
     @FXML
     private ImageView image;
     @FXML
@@ -80,12 +81,14 @@ public class Explicacion extends Controlador{
     private Circle level;
     @FXML
     private Button elegirImagen;
-   
+    
+    private boolean needsInsert=false;
     private boolean isEditing = false;
     public void ready(){
         if(this.r.nueva){
-            modoEditar(true);
             this.r.nueva=false;
+            needsInsert=true;
+            modoEditar(true);
         }else{
             try {
                 showPasos();
@@ -99,13 +102,19 @@ public class Explicacion extends Controlador{
     }
     public void fillCategories() throws SQLException{
         List<Category> categories = this.app.categoryDao.queryForAll();
+
         ObservableList<Category> categories_l = FXCollections.observableArrayList(categories);
         categoriaEdit.setItems(categories_l);
+         if(!needsInsert){
+            try{
+            Category cat = this.app.categoryDao.queryBuilder().where().eq("id", r.getCategory().getId()).queryForFirst();
+            category.setText(cat.getName());
+             }catch(Exception e){}
+         }
     }
     public void showInformation(){
         name.setText(r.getName());
         people.setText(Integer.toString(r.getPeople()));
-        category.setText(r.getCategory().getName());
         time.setText(Integer.toString(r.getTime()));
         level.setFill(Color.web(r.getLevel()));
         image.setImage(r.getImage());
@@ -222,8 +231,19 @@ public class Explicacion extends Controlador{
         v.image = i.loadImage();
         v.ready();
     }
-    
+    public void createIfNeeded(){
+        if(needsInsert){
+            try {
+                this.app.recetaDao.create(r);
+            } catch (SQLException ex) {
+                System.out.println("Error al crear la receta");
+            }
+            needsInsert=false;
+        }
+        
+    }
     public void addPaso(){
+        createIfNeeded();
         Paso p = new Paso("", pasos.size()+1, r);
         try {
             this.app.pasoDao.create(p);
@@ -234,6 +254,7 @@ public class Explicacion extends Controlador{
     }
     
     public void addIngrediente(){
+        createIfNeeded();
         Ingrediente i = new Ingrediente("", "", r);
         try{
             this.app.ingredienteDao.create(i);
@@ -244,6 +265,7 @@ public class Explicacion extends Controlador{
     }
     
     public void save() throws SQLException{
+        createIfNeeded();
         for (Object a : pasosList.getItems()) {
             Paso p = (Paso)a;
             TextArea description = (TextArea)pasosList.lookup("#description"+p.getId());
@@ -264,6 +286,7 @@ public class Explicacion extends Controlador{
             r.setName(nameEdit.getText());
             r.setTime(Integer.parseInt(time.getText()));
             r.setPeople(Integer.parseInt(people.getText()));
+            r.setCategory((Category) categoriaEdit.getSelectionModel().getSelectedItem());
             this.app.recetaDao.update(r);
         }catch(Exception e){
             Alert alert = new Alert(AlertType.ERROR);
@@ -274,6 +297,7 @@ public class Explicacion extends Controlador{
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){}
         }
+        this.app.inicio.ready();
     }
     public void modoEditar(boolean t){
         isEditing=t;
@@ -286,6 +310,11 @@ public class Explicacion extends Controlador{
         nameEdit.setVisible(t);
         nameEdit.setText(name.getText());
         categoriaEdit.setVisible(t);
+        addPaso.setVisible(t);
+        removePaso.setVisible(t);
+        addIngrediente.setVisible(t);
+        removeIngrediente.setVisible(t);
+        elegirImagen.setVisible(t);
         this.ready();
     }
     
@@ -339,32 +368,26 @@ public class Explicacion extends Controlador{
         }
     }
     @FXML
+    public void levelClick(Event e){
+       if(isEditing){
+       int nextLevel = (this.r.getPlainLevel()+1)%3;
+       this.r.setLevel(nextLevel);
+       level.setFill(Color.web(r.getLevel()));
+       }
+       
+    }
+    @FXML
     private void initialize() {
         //Botones
-        addPaso.setDisable(true);
-        removePaso.setDisable(true);
-        addIngrediente.setDisable(true);
-        removeIngrediente.setDisable(true);
-        elegirImagen.setVisible(false);
         elegirImagen.setOnMouseClicked((event) -> {elegirImagenReceta();}); 
-
         addPaso.setOnMouseClicked((event) -> { addPaso();  });
         addIngrediente.setOnMouseClicked((event) -> { addIngrediente();  });
-        editarButton.setOnMouseClicked((event) -> { 
-            modoEditar(true); 
-            removePaso.setDisable(false);
-            addPaso.setDisable(false); 
-            addIngrediente.setDisable(false);
-            elegirImagen.setVisible(true);
-            removeIngrediente.setDisable(false);});
+        editarButton.setOnMouseClicked((event) -> { modoEditar(true); });
         saveButton.setOnMouseClicked((event) -> { 
           try{ 
             save(); 
             modoEditar(false);
-            elegirImagen.setVisible(false);
-            addPaso.setDisable(true);
-            addIngrediente.setDisable(true);
-            removeIngrediente.setDisable(true);
+            
           } catch (SQLException ex) { System.out.println("Error al guardar información");} });
 
         

@@ -20,6 +20,7 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,7 +36,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -44,6 +47,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import recetario.model.Category;
+import recetario.model.Paso;
 import recetario.model.Receta;
 
 public class Inicio extends Controlador {
@@ -57,7 +61,10 @@ public class Inicio extends Controlador {
     private TextField search;
     @FXML
     private ImageView newReceta;
-    
+    @FXML
+    private AnchorPane screen;
+    @FXML
+    private HBox all;    
     public int category=0;
     public int level=0;
     public int rating=0;
@@ -153,7 +160,7 @@ public class Inicio extends Controlador {
             ObservableList<String> levels_l = FXCollections.observableArrayList(levels);
             levelFilter.setItems(levels_l);
             levelFilter.getSelectionModel().selectFirst();
-            
+            this.getNumbers();
             //Cargamos las recetas de la DB:
         } catch (SQLException ex) {
             Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
@@ -182,8 +189,8 @@ public class Inicio extends Controlador {
                                 Button delete = (Button)root.lookup("#delete");                
                                 name.setText(item.getName());
                                 image.setImage(item.getImage());
-                                time.setText(Integer.toString(item.getTime()));
-                                people.setText(Integer.toString(item.getPeople()));
+                                time.setText(Integer.toString(item.getTime())+" minutos");
+                                people.setText(Integer.toString(item.getPeople())+" comensales");
                                 level.setFill(Color.web(item.getLevel()));
                                 open.setOnAction((event) -> { abrirReceta(item);  });
                                 delete.setOnAction((event) -> { eliminarReceta(item);  });
@@ -228,32 +235,47 @@ public class Inicio extends Controlador {
         
         newReceta.setOnMouseClicked((event)->{ newReceta(); });
     }
+    private void getNumbers(){
+       for(int i=1;i<=5;i++){
+           try {
+               QueryBuilder<Receta, Integer> qb = this.app.recetaDao.queryBuilder();
+               qb.setCountOf(true);
+               Where where = qb.where();
+               where.eq(Receta.NAME_FIELD_CATEGORY, i);
+               PreparedQuery p = qb.prepare();
+               int c = (int)this.app.recetaDao.countOf(p);
+               Label l = (Label)screen.lookup("#counter"+i);
+               l.setText(c+"");
+           } catch (SQLException ex) {
+              System.out.println("Error contando");
+           }
 
+           
+       }
+    }
     @FXML
-     private void doImport(ActionEvent event) {
-         try{   
-         FileOutputStream fout = null;
-            //Import receta
-            Receta r = (Receta) listView1.getItems().get(0);
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Exportar receta");
-            File file = fileChooser.showSaveDialog(this.app.stage);
-            if (file != null) {
-                try {
-                    fout = new FileOutputStream(file);
-                    ObjectOutputStream oos = new ObjectOutputStream(fout);
-                    oos.writeObject(r);
-                    oos.close();
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                }
-            }
-
-        
-     }catch(Exception e){
-         System.out.println(e.getMessage());
+     private void categoryClick(Event event) {
+         HBox h = (HBox)event.getSource();
+         int id=0;
+         if(h!=all){
+            id = Integer.parseInt(h.getId());
+         }
+         category=id;
+         all.getStyleClass().remove("selected");          
+         for(int i=1;i<=5;i++){
+           HBox hb = (HBox)screen.lookup("#"+i);
+           hb.getStyleClass().remove("selected");
+           
+         }
+         h.getStyleClass().add("selected");
+        try {
+            mostrarRecetas();
+        } catch (SQLException ex) {
+            System.out.println("Error");
+        }
+         
      }
-     } 
+
      
         
 

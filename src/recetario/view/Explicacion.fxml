@@ -10,13 +10,69 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="515.0" prefWidth="739.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="recetario.controller.Explicacion">
+<AnchorPane id="AnchorPane" prefHeight="515.0" prefWidth="739.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="recetario.controller.Explicacion">
    <children>
       <VBox prefHeight="281.0" prefWidth="739.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <HBox prefWidth="200.0" style="-fx-background-color: #3a4f5f;">
                <children>
-                  <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane HBox.hgrow="ALWAYS">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="603.0" minWidth="10.0" prefWidth="603.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="358.0" minWidth="10.0" prefWidth="136.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label fx:id="name" text="Título de la receta" textFill="WHITE">
+                           <font>
+                              <Font name="Avenir Roman" size="31.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets left="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <ImageView fx:id="editarButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                           <image>
+                              <Image url="@../../resources/edit46.png" />
+                           </image>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                        <ImageView fx:id="saveButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                           <image>
+                              <Image url="@../../resources/save15.png" />
+                           </image>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                        <TextField fx:id="nameEdit" visible="false">
+                           <font>
+                              <Font name="Avenir Roman" size="17.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets left="10.0" />
+                           </GridPane.margin>
+                        </TextField>
+                     </children>
+                  </GridPane>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </HBox>
+            <AnchorPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;">
+               <children>
+                  <HBox fillHeight="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <StackPane>
                            <children>
@@ -28,24 +84,24 @@
                                     <Insets left="10.0" />
                                  </StackPane.margin>
                               </ImageView>
-                              <Circle fx:id="level" fill="#1fff6c" radius="10.0" stroke="#00000060" strokeType="INSIDE" StackPane.alignment="BOTTOM_RIGHT">
+                              <Circle fx:id="level" fill="#1fff6c" onMouseClicked="#levelClick" radius="10.0" stroke="#00000060" strokeType="INSIDE" StackPane.alignment="BOTTOM_RIGHT">
                                  <StackPane.margin>
-                                    <Insets bottom="20.0" />
+                                    <Insets />
                                  </StackPane.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </Circle>
-                              <Button fx:id="elegirImagen" mnemonicParsing="false" text="Elegir..." />
+                              <Button fx:id="elegirImagen" mnemonicParsing="false" text="Elegir..." visible="false" />
                            </children>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
                         </StackPane>
                         <AnchorPane maxWidth="1.7976931348623157E308" prefWidth="200.0" HBox.hgrow="ALWAYS">
                            <children>
                               <GridPane maxWidth="1.7976931348623157E308" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <TextField fx:id="nameEdit" visible="false" />
-                                    <Label fx:id="name" text="Título de la receta">
-                                       <font>
-                                          <Font name="System Bold" size="31.0" />
-                                       </font>
-                                    </Label>
                                     <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                                        <children>
                                           <ImageView fitHeight="20.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
@@ -67,8 +123,14 @@
                                              <HBox.margin>
                                                 <Insets />
                                              </HBox.margin>
+                                             <font>
+                                                <Font name="Avenir Roman" size="15.0" />
+                                             </font>
                                           </Label>
                                        </children>
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
                                     </HBox>
                                     <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                        <children>
@@ -84,33 +146,29 @@
                                              <padding>
                                                 <Insets top="2.0" />
                                              </padding></TextField>
-                                          <Label text="comensales" />
+                                          <Label text="comensales">
+                                             <font>
+                                                <Font name="Avenir Roman" size="15.0" />
+                                             </font></Label>
                                        </children>
                                     </HBox>
                                     <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
                                        <children>
                                           <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../../resources/categoria.png" />
+                                                <Image url="@../../resources/purchase2.png" />
                                              </image>
                                           </ImageView>
                                           <Label fx:id="category" text="Primer plato">
                                              <padding>
                                                 <Insets left="5.0" top="2.0" />
                                              </padding>
+                                             <font>
+                                                <Font name="Avenir Roman" size="15.0" />
+                                             </font>
                                           </Label>
                                        </children>
                                     </HBox>
-                                    <Button fx:id="editarButton" mnemonicParsing="false" text="Editar" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-                                       <GridPane.margin>
-                                          <Insets right="20.0" />
-                                       </GridPane.margin>
-                                    </Button>
-                                    <Button fx:id="saveButton" mnemonicParsing="false" text="Guardar" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-                                       <GridPane.margin>
-                                          <Insets right="20.0" />
-                                       </GridPane.margin>
-                                    </Button>
                                     <ComboBox fx:id="categoriaEdit" prefWidth="150.0" visible="false" GridPane.rowIndex="3" GridPane.valignment="TOP">
                                        <GridPane.margin>
                                           <Insets left="25.0" />
@@ -122,7 +180,7 @@
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                  </columnConstraints>
                                  <rowConstraints>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -136,7 +194,7 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <children>
-                  <GridPane gridLinesVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -144,41 +202,97 @@
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" />
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="NEVER" />
                     </rowConstraints>
                      <children>
-                        <Button fx:id="removePaso" mnemonicParsing="false" text="Eliminar paso" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-                           <GridPane.margin>
-                              <Insets right="30.0" />
-                           </GridPane.margin>
-                        </Button>
-                        <Label text="Ingredientes" GridPane.halignment="CENTER">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                        </Label>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #3a4f5f;">
+                           <children>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../resources/howto.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Ingredientes" textFill="WHITE">
+                                 <font>
+                                    <Font name="Avenir Roman" size="18.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
                         <ListView fx:id="ingredientesList" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
                         <ListView fx:id="pasosList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="Forma de preparación" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                        </Label>
-                        <Button fx:id="addIngrediente" mnemonicParsing="false" text="Añadir ingrediente" GridPane.halignment="LEFT" GridPane.rowIndex="2">
-                           <GridPane.margin>
-                              <Insets left="30.0" />
-                           </GridPane.margin>
-                        </Button>
-                        <Button fx:id="removeIngrediente" mnemonicParsing="false" text="Eliminar ingrediente" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-                           <GridPane.margin>
-                              <Insets right="30.0" />
-                           </GridPane.margin>
-                        </Button>
-                        <Button fx:id="addPaso" mnemonicParsing="false" text="Añadir paso" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                           <GridPane.margin>
-                              <Insets left="30.0" />
-                           </GridPane.margin>
-                        </Button>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #3a4f5f;" GridPane.columnIndex="1">
+                           <children>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../resources/instructions.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Forma de preparación" textFill="WHITE">
+                                 <font>
+                                    <Font name="Avenir Roman" size="18.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+                           <children>
+                              <ImageView fx:id="removeIngrediente" fitHeight="20.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <image>
+                                    <Image url="@../../resources/minus104.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <ImageView fx:id="addIngrediente" fitHeight="20.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <image>
+                                    <Image url="@../../resources/plus.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets right="5.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <children>
+                              <ImageView fx:id="removePaso" fitHeight="20.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <image>
+                                    <Image url="@../../resources/minus104.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <ImageView fx:id="addPaso" fitHeight="20.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <image>
+                                    <Image url="@../../resources/plus.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets right="5.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                           </children>
+                        </HBox>
                      </children>
                   </GridPane>
                </children>
