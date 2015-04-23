@@ -1,5 +1,13 @@
 # Recetario
 
+
+![Screenshot](http://i.imgur.com/CbQu3cg.png "Optional title")
+
+
+![Screenshot](http://i.imgur.com/0oGY4AH.png "Optional title")
+
+
+
 La aplicación está estructurada con el esquema Modelo-Vista-Controlador (MVC), por lo tanto, en el proyecto encontraremos las rutas definidas como:
 
 | Ruta                 | Clases                                                  | Uso                                                                                                                                | Extiende a... |
