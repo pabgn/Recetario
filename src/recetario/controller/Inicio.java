@@ -52,13 +52,11 @@ public class Inicio extends Controlador {
     @FXML
     private ListView listView2; 
     @FXML
-    private ComboBox categoryFilter;
-    @FXML
     private ComboBox levelFilter;
     @FXML
     private TextField search;
     @FXML
-    private Button newReceta;
+    private ImageView newReceta;
     
     public int category=0;
     public int level=0;
@@ -151,8 +149,6 @@ public class Inicio extends Controlador {
             //Cargamos las categorías de la DB:
             List<Category> categories = this.app.categoryDao.queryForAll();
             ObservableList<Category> categories_l = FXCollections.observableArrayList(categories);
-            categoryFilter.setItems(categories_l);
-            categoryFilter.getSelectionModel().selectFirst();
             List<String> levels = Arrays.asList("Todos", "Fácil", "Medio", "Difícil");
             ObservableList<String> levels_l = FXCollections.observableArrayList(levels);
             levelFilter.setItems(levels_l);
@@ -209,44 +205,7 @@ public class Inicio extends Controlador {
                    
         }
         
-        categoryFilter.setCellFactory((comboBox) -> {
-            return new ListCell<Category>() {
-                @Override
-                protected void updateItem(Category item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                    } else {
-                        setText(item.getName());
-                    }
-                }
-            };
-        });
-        categoryFilter.setConverter(new StringConverter<Category>() {
-            @Override
-            public String toString(Category person) {
-                if (person == null) {
-                    return null;
-                } else {
-                    return person.getName();
-                }
-            }
-            @Override
-            public Category fromString(String personString) {
-                return null; // No conversion fromString needed.
-            }
-        });
-
-        categoryFilter.setOnAction((event) -> {
-            try {
-                Category category = (Category) categoryFilter.getSelectionModel().getSelectedItem();
-                this.category = category.getId();
-                mostrarRecetas();
-            } catch (SQLException ex) {
-                System.out.println("Error en búsqueda por categoría");
-            }
-            
-        });
+       
         
         levelFilter.setOnAction((event) -> {
             try {
@@ -267,7 +226,7 @@ public class Inicio extends Controlador {
                }
             }});
         
-        newReceta.setOnAction((event)->{ newReceta(); });
+        newReceta.setOnMouseClicked((event)->{ newReceta(); });
     }
 
     @FXML
