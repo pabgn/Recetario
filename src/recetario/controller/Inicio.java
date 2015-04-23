@@ -182,8 +182,8 @@ public class Inicio extends Controlador {
                                 Button delete = (Button)root.lookup("#delete");                
                                 name.setText(item.getName());
                                 image.setImage(item.getImage());
-                                time.setText(item.getTime());
-                                people.setText(item.getPeople());
+                                time.setText(Integer.toString(item.getTime()));
+                                people.setText(Integer.toString(item.getPeople()));
                                 level.setFill(Color.web(item.getLevel()));
                                 open.setOnAction((event) -> { abrirReceta(item);  });
                                 delete.setOnAction((event) -> { eliminarReceta(item);  });

@@ -22,6 +22,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -34,7 +35,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.util.StringConverter;
 import org.h2.store.fs.FileUtils;
+import recetario.model.Category;
 import recetario.model.Ingrediente;
 import recetario.model.Paso;
 import recetario.model.Receta;
@@ -62,16 +65,22 @@ public class Explicacion extends Controlador{
     @FXML
     private ImageView image;
     @FXML
-    private Label name;  
-    @FXML
-    private Label time;  
-    @FXML
-    private Label people;
+    private Label name;
     @FXML
     private Label category;
     @FXML
+    private TextField nameEdit;
+    @FXML
+    private TextField time;
+    @FXML
+    private TextField people;
+    @FXML
+    private ComboBox categoriaEdit;
+    @FXML
     private Circle level;
-    
+    @FXML
+    private Button elegirImagen;
+   
     private boolean isEditing = false;
     public void ready(){
         if(this.r.nueva){
@@ -81,17 +90,23 @@ public class Explicacion extends Controlador{
             try {
                 showPasos();
                 showIngredientes();
+                fillCategories();
             } catch (SQLException ex) {
                 System.out.println("Error en la búsqueda de la receta");
             }
             showInformation();
         }
     }
+    public void fillCategories() throws SQLException{
+        List<Category> categories = this.app.categoryDao.queryForAll();
+        ObservableList<Category> categories_l = FXCollections.observableArrayList(categories);
+        categoriaEdit.setItems(categories_l);
+    }
     public void showInformation(){
         name.setText(r.getName());
-        people.setText(r.getPeople());
+        people.setText(Integer.toString(r.getPeople()));
         category.setText(r.getCategory().getName());
-        time.setText(r.getTime());
+        time.setText(Integer.toString(r.getTime()));
         level.setFill(Color.web(r.getLevel()));
         image.setImage(r.getImage());
     }
@@ -244,11 +259,33 @@ public class Explicacion extends Controlador{
             i.setCantidad(weight.getText());
             this.app.ingredienteDao.update(i);
         }
+        
+        try{
+            r.setName(nameEdit.getText());
+            r.setTime(Integer.parseInt(time.getText()));
+            r.setPeople(Integer.parseInt(people.getText()));
+            this.app.recetaDao.update(r);
+        }catch(Exception e){
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error en los datos");
+            alert.setHeaderText("Datos incorrectos");
+            alert.setContentText("Asegurate de introducir los datos correctamente");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){}
+        }
     }
     public void modoEditar(boolean t){
         isEditing=t;
         editarButton.setVisible(!t);
         saveButton.setVisible(t);
+        name.setVisible(!t);
+        time.setDisable(!t);
+        people.setDisable(!t);
+        category.setVisible(!t);
+        nameEdit.setVisible(t);
+        nameEdit.setText(name.getText());
+        categoriaEdit.setVisible(t);
         this.ready();
     }
     
@@ -269,6 +306,38 @@ public class Explicacion extends Controlador{
         }
         this.ready();
     }
+    
+    public void elegirImagenReceta(){
+        try{
+            final FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(stage);
+            if (file != null) {
+                File dest = new File("./data/images/"+file.getName());
+                try {
+                    copyFile(file, dest);
+                    r.setImage(file.getName());
+                    image.setImage(r.loadImage());
+                } catch (IOException ex) {
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error en la BBDD");
+                    alert.setContentText("No ha sido posible guardar la imagen");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK){}
+                }
+                   
+            }
+        }catch(Exception ex) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error en la imagen");
+            alert.setHeaderText("Imagen erronea");
+            alert.setContentText("Asegurate de introducir la imagen correctamente");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){}
+        }
+    }
     @FXML
     private void initialize() {
         //Botones
@@ -276,7 +345,9 @@ public class Explicacion extends Controlador{
         removePaso.setDisable(true);
         addIngrediente.setDisable(true);
         removeIngrediente.setDisable(true);
-        
+        elegirImagen.setVisible(false);
+        elegirImagen.setOnMouseClicked((event) -> {elegirImagenReceta();}); 
+
         addPaso.setOnMouseClicked((event) -> { addPaso();  });
         addIngrediente.setOnMouseClicked((event) -> { addIngrediente();  });
         editarButton.setOnMouseClicked((event) -> { 
@@ -284,16 +355,18 @@ public class Explicacion extends Controlador{
             removePaso.setDisable(false);
             addPaso.setDisable(false); 
             addIngrediente.setDisable(false);
+            elegirImagen.setVisible(true);
             removeIngrediente.setDisable(false);});
         saveButton.setOnMouseClicked((event) -> { 
           try{ 
             save(); 
             modoEditar(false);
+            elegirImagen.setVisible(false);
             addPaso.setDisable(true);
             addIngrediente.setDisable(true);
             removeIngrediente.setDisable(true);
           } catch (SQLException ex) { System.out.println("Error al guardar información");} });
-        
+
         
         //Estilo de la lista de pasos
         pasosList.setCellFactory((list) -> {
@@ -329,6 +402,7 @@ public class Explicacion extends Controlador{
                                   descriptionEdit.setText(item.getDescription());
                                   descriptionEdit.setVisible(true);
                                   descriptionEdit.setId("description"+item.getId());
+                                  media.setVisible(true);
                                   choose.setVisible(true);
                                   choose.setOnMouseClicked((event) -> { mediaDialog(item, media);  });
                             }
@@ -346,6 +420,34 @@ public class Explicacion extends Controlador{
             };
         });
         
+         categoriaEdit.setCellFactory((comboBox) -> {
+            return new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                    }
+                }
+            };
+        });
+         
+         categoriaEdit.setConverter(new StringConverter<Category>() {
+            @Override
+            public String toString(Category person) {
+                if (person == null) {
+                    return null;
+                } else {
+                    return person.getName();
+                }
+            }
+            @Override
+            public Category fromString(String personString) {
+                return null; // No conversion fromString needed.
+            }
+        });
         
         ingredientesList.setCellFactory((list) -> {
             return new ListCell<Ingrediente>() {
@@ -375,7 +477,7 @@ public class Explicacion extends Controlador{
                                 descriptionEdit.setVisible(true);
                                 descriptionEdit.setText(description.getText());
                                 descriptionEdit.setId("description"+i.getId());
-                                media.setVisible(false);
+                                media.setVisible(true);
                                 choose.setVisible(true);
                                 choose.setOnMouseClicked((event) -> { mediaIngrediente(i, media);  });
                             }
