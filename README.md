@@ -1,5 +1,6 @@
 # Recetario
 
+Recetario programado en Java y con soporte de base de datos H2 con capacidad para gestión mediante categorías, filtrado por nombre y dificultad, subida de imágenes para pasos e ingredientes de media local o vídeos externos (YouTube) con un diseño basado en la simplicidad, la iconografía y la facilidad en la edición de todas las opciones.
 
 ![Screenshot](http://i.imgur.com/CbQu3cg.png "Optional title")
 
