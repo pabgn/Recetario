@@ -20,7 +20,7 @@ La aplicación está estructurada con el esquema Modelo-Vista-Controlador (MVC),
 
 # 1. Flujo de ejecución en hilo principal
 
-Cuando el main() contenido en Recetario.java se ejecuta, se procesas diversas tareas cruciales para el comportamiento normal de la aplicación:
+Cuando el main() contenido en Recetario.java se ejecuta, se procesan diversas tareas cruciales para el comportamiento normal de la aplicación:
 
 **1. Creación del Stage principal y apertura de ventana**
 ```
