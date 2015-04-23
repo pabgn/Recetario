@@ -69,12 +69,12 @@ public class Receta {
     public Category getCategory(){
         return this.category;
     }
-    public String getTime(){
-        return this.time+" minutos";
+    public int getTime(){
+        return this.time;
         
     }
-    public String getPeople(){
-        return this.people+" comensales";
+    public int getPeople(){
+        return this.people;
     }
     public String getLevel(){
         if(this.level==1){ return "green"; }
@@ -85,5 +85,30 @@ public class Receta {
     public int getId() {
         return this.id;
     }
-   
+    
+    public void setName(String n){
+        this.name = n;
+    }
+    
+    public void setTime(int t){
+        this.time = t;
+    }
+    
+    public void setPeople(int p){
+        this.people = p;
+    }
+    
+    public void setImage(String i){
+        this.imagen = i;
+    }
+    
+    public Image loadImage(){
+        Image img;
+        try{
+            img = new Image("file:./data/images/"+this.imagen);
+        } catch(Exception e){
+            img = new Image("/resources/comida.jpg");
+        } 
+        return img;      
+    }
 }

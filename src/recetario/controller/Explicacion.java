@@ -65,24 +65,22 @@ public class Explicacion extends Controlador{
     @FXML
     private ImageView image;
     @FXML
-    private Label name;  
-    @FXML
-    private Label time;  
-    @FXML
-    private Label people;
+    private Label name;
     @FXML
     private Label category;
     @FXML
     private TextField nameEdit;
     @FXML
-    private TextField timeEdit;
+    private TextField time;
     @FXML
-    private TextField peopleEdit;
+    private TextField people;
     @FXML
     private ComboBox categoriaEdit;
     @FXML
     private Circle level;
-    
+    @FXML
+    private Button elegirImagen;
+   
     private boolean isEditing = false;
     public void ready(){
         if(this.r.nueva){
@@ -106,9 +104,9 @@ public class Explicacion extends Controlador{
     }
     public void showInformation(){
         name.setText(r.getName());
-        people.setText(r.getPeople());
+        people.setText(Integer.toString(r.getPeople()));
         category.setText(r.getCategory().getName());
-        time.setText(r.getTime());
+        time.setText(Integer.toString(r.getTime()));
         level.setFill(Color.web(r.getLevel()));
         image.setImage(r.getImage());
     }
@@ -261,21 +259,32 @@ public class Explicacion extends Controlador{
             i.setCantidad(weight.getText());
             this.app.ingredienteDao.update(i);
         }
+        
+        try{
+            r.setName(nameEdit.getText());
+            r.setTime(Integer.parseInt(time.getText()));
+            r.setPeople(Integer.parseInt(people.getText()));
+            this.app.recetaDao.update(r);
+        }catch(Exception e){
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error en los datos");
+            alert.setHeaderText("Datos incorrectos");
+            alert.setContentText("Asegurate de introducir los datos correctamente");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){}
+        }
     }
     public void modoEditar(boolean t){
         isEditing=t;
         editarButton.setVisible(!t);
         saveButton.setVisible(t);
         name.setVisible(!t);
-        time.setVisible(!t);
-        people.setVisible(!t);
+        time.setDisable(!t);
+        people.setDisable(!t);
         category.setVisible(!t);
         nameEdit.setVisible(t);
         nameEdit.setText(name.getText());
-        timeEdit.setVisible(t);
-        timeEdit.setText(time.getText());
-        peopleEdit.setVisible(t);
-        peopleEdit.setText(people.getText());
         categoriaEdit.setVisible(t);
         this.ready();
     }
@@ -297,6 +306,38 @@ public class Explicacion extends Controlador{
         }
         this.ready();
     }
+    
+    public void elegirImagenReceta(){
+        try{
+            final FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(stage);
+            if (file != null) {
+                File dest = new File("./data/images/"+file.getName());
+                try {
+                    copyFile(file, dest);
+                    r.setImage(file.getName());
+                    image.setImage(r.loadImage());
+                } catch (IOException ex) {
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error en la BBDD");
+                    alert.setContentText("No ha sido posible guardar la imagen");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK){}
+                }
+                   
+            }
+        }catch(Exception ex) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error en la imagen");
+            alert.setHeaderText("Imagen erronea");
+            alert.setContentText("Asegurate de introducir la imagen correctamente");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){}
+        }
+    }
     @FXML
     private void initialize() {
         //Botones
@@ -304,7 +345,9 @@ public class Explicacion extends Controlador{
         removePaso.setDisable(true);
         addIngrediente.setDisable(true);
         removeIngrediente.setDisable(true);
-        
+        elegirImagen.setVisible(false);
+        elegirImagen.setOnMouseClicked((event) -> {elegirImagenReceta();}); 
+
         addPaso.setOnMouseClicked((event) -> { addPaso();  });
         addIngrediente.setOnMouseClicked((event) -> { addIngrediente();  });
         editarButton.setOnMouseClicked((event) -> { 
@@ -312,16 +355,18 @@ public class Explicacion extends Controlador{
             removePaso.setDisable(false);
             addPaso.setDisable(false); 
             addIngrediente.setDisable(false);
+            elegirImagen.setVisible(true);
             removeIngrediente.setDisable(false);});
         saveButton.setOnMouseClicked((event) -> { 
           try{ 
             save(); 
             modoEditar(false);
+            elegirImagen.setVisible(false);
             addPaso.setDisable(true);
             addIngrediente.setDisable(true);
             removeIngrediente.setDisable(true);
           } catch (SQLException ex) { System.out.println("Error al guardar información");} });
-        
+
         
         //Estilo de la lista de pasos
         pasosList.setCellFactory((list) -> {
